@@ -89,7 +89,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%
 %%%
-\title[Defesa de doutorado]{Corisco: Robust edgel-based orientation estimation for\\ generic camera models}
+\title[Corisco]{Corisco: Robust edgel-based orientation estimation for\\ generic camera models}
 
 \author[N. Werneck]{Nicolau~L.~Werneck\\
 \usebox{\myurl}
@@ -155,12 +155,10 @@ Presentation adapted from my doctorate defense. Results were published in~\citet
 \begin{frame}{Presentation Schedule}
   \begin{enumerate}
   \item Problem introduction
-  \item How \corisco works
-  \item Experiments
-  \item Conclusion
+  \item Method proposal
+  \item Experiments and conclusion
   \end{enumerate}
 \end{frame}
-
 
 
 %%
@@ -198,7 +196,7 @@ The orientation we find is a three-dimensional rotation between the natural and 
 %%
 \begin{frame}{Proposal}
   \begin{overprint}
-    \alert<+>{} We proposed a \alert<+>{monocular} vision method,
+    \alert<+>{} We propose a \alert<+>{monocular} vision method,
     denominated \corisco, that can estimate the orientation of a camera relative to an anthropic environment.\alert<+>{}
 
     Evolution of existing edgel based methods \citep{Coughlan2003}.
@@ -220,27 +218,33 @@ The orientation we find is a three-dimensional rotation between the natural and 
   \begin{itemize}
   \item Supports any possible camera model.
   \item Compromise between speed and precision.
-  \item No assumptions about the solution.
   \item Dismisses the use of very costly operations ({\tt sin}, {\tt atan},
     {\tt exp}, {\tt log}). Uses the function $x^{-1/2}$.
   \end{itemize}
+
+  There are also no assumptions about the solution.
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section[2--Corisco]{Detalhamento do Corisco}
+
+%%
+%%
+\begin{frame}{High-level view}{}
+  {\bf Inputs:} Image, intrinsic and control parameters.\\
+  {\bf Output:} Orientation $\vP$ (three-dimensional rotation).
+  \vfill
+  \centerline{\includegraphics[height=11\baselineskip]{cg.pdf}} 
 \end{frame}
 
 
 %%
 %%
-\begin{frame}{High-level view}{}
-  {\bf Inputs:} Image, control and intrinsic parameters.\\
-  {\bf Output:} Orientation $\vP$ (three-dimensional rotation).
-  \vfill
-  \centerline{\includegraphics[height=11\baselineskip]{cg.pdf}}    
-  \end{frame}
-
-
-%%
-%%
-\begin{frame}{Geometria}
-  A direção $\vv$ de uma reta sobre o ponto $\vp$ depende de $\vP$.
+\begin{frame}{Geometry}
+  The direction $\vv$ of a line over the point $\vp$ depends on $\vP$.
   \[
   (\vP,\vp) \rightarrow \vv
   \]
@@ -252,40 +256,42 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
 %%
-\begin{frame}{Objetivo}
-  \begin{block}{Nossa pergunta}
-    {\em Qual seria a melhor forma de estimar a orientação de câmera em
-      \alert<2>{tempo real} em um ambiente antrópico a partir de uma única
-      \alert<2>{imagem distorcida}?}
+\begin{frame}{Objective}
+  \begin{block}{Our question}
+    {\em What could be the best way to estimate the orientation of a camera in
+      \alert<2>{real time} in an anthropic environment based on a single
+      \alert<2>{distorted image}?}
   \end{block}
 \end{frame}
 
 
-\begin{frame}{Edgels {\em versus} retas}
-  A orientação pode ser encontrada por retas
+\begin{frame}{Edgels {\em versus} lines}
+  Orientation can be found from lines
   (\cite{Caprile1990,Cipolla1999,Rother2002}).\\ %Cipolla1999,Rother2002
   \begin{itemize}
-  \item Mais intuitivos.
-  \item Alcançam boas precisões.
+  \item More intuitive.
+  \item Attain a good precision.
   \end{itemize}
 
- No entanto:\\
+ On the other hand:\\
   \begin{itemize}
-  \item Restrição à projeção perspectiva.
-  \item Complexidade da extração de retas.%\\(Número indeterminado de classes.)
+  \item Restricted to perspective projection.
+  \item Rely on complicated line extraction.%\\(Número indeterminado de classes.)
   \end{itemize}
 
-  Edgels permitem lidar com distorções e são mais fáceis de extrair e de sub-amostrar.
+  Edgels allow us to handle distortions and are easier to extract and sub-sample.
 \end{frame}
 
 
+
 %%
 %%
-\begin{frame}{Detalhamento do Corisco}
+\begin{frame}{Corisco in detail}
   \only<+>{\centerline{\includegraphics[height=14.2\baselineskip]{oriex91.png}}}
   \only<+>{\centerline{\includegraphics[height=14.2\baselineskip]{sep_york91.png}}}
   \only<+>{\centerline{\includegraphics[height=14.2\baselineskip]{oriexfish6.png}}}
@@ -294,19 +300,6 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 
 
-
-
-
-
-
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section[2--Corisco]{Detalhamento do Corisco}
 %%
 %%
 \begin{frame}{Block diagram}
@@ -323,7 +316,7 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 %%
 %%
-\begin{frame}{Extração de edgels}
+\begin{frame}{Edgel extraction}
   \centerline{\includegraphics[height=12\baselineskip]{blocos_s1.pdf}}
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)%
     \includegraphics[width=17mm]{blocos_s1.png}%
@@ -333,28 +326,26 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 %%
 %%
-\begin{frame}{Extração de edgels}
+\begin{frame}{Edgel extraction}
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)
     \includegraphics[width=17mm]{blocos_s1.png}
   \end{textblock*}
   \begin{itemize}
-  \item Similar à detecção de bordas de Canny.\\
-  \item Bordas são máximos locais na direção do gradiente.
+  \item Similar to the Canny border detection.\\
+  \item Borders are local maxima in the gradient direction.
   \end{itemize}
   \centerline{\includegraphics[height=12\baselineskip]{graddemo2.pdf}}
 \end{frame}
 
 %%
 %%
-\begin{frame}{Extração de edgels}
+\begin{frame}{Edgel extraction}
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)
     \includegraphics[width=17mm]{blocos_s1.png}
   \end{textblock*}
-  Varredura da imagem sobre um conjunto de linhas e colunas que formam uma {\em
-    máscara em forma de grade.}
+  Sweep the image over a set of lines and columns that constitute a {\em grid mask.}
 
-  Cada borda encontrada produz um edgel. Sua direção deve ser aproximadamente
-  ortogonal à da linha varrida.
+  Each border found produces an edgel. Its direction should be approximately orthogonal to the line swept.
   \centerline{\includegraphics[height=8\baselineskip]{griddemo2.pdf}}
 
 \end{frame}
@@ -386,7 +377,7 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 %%
 %%
-\begin{frame}{Modelos de câmera}
+\begin{frame}{Camera models}
   \only<1>{\centerline{\includegraphics[height=12\baselineskip]{blocos_s1.pdf}}}
   \only<2>{\centerline{\includegraphics[height=12\baselineskip]{blocos_s2.pdf}}}
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)
@@ -398,12 +389,11 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 %% 
 %%
-\begin{frame}{Modelos de câmera}
+\begin{frame}{Camera models}
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)
     \includegraphics[width=17mm]{blocos_s2.png}
   \end{textblock*}
-  Mapeamento bijetivo entre os pontos da imagem e direções ao redor do ponto
-  focal da câmera.  
+  Bijective map between the image points and directions around the camera focal point.
   \[\vq\rightleftharpoons\vp\]
 
   \begin{center}
@@ -414,11 +404,11 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 %%
 %%
-\begin{frame}{Exemplos de modelos de câmera}
+\begin{frame}{Camera model examples}
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)
     \includegraphics[width=17mm]{blocos_s2.png}
   \end{textblock*}
-  Grande angular, olho-de-peixe, equiretangular.
+  Wide-angle, fisheye, equirectangular.
   \centerline{
     \includegraphics[width=0.4\linewidth]{00000069.jpg}
     \includegraphics[width=0.4\linewidth]{fisheye.jpg}
@@ -437,7 +427,7 @@ The orientation we find is a three-dimensional rotation between the natural and 
   \end{textblock*}
   \begin{center}
     \begin{tabular}{ll}
-      Perspectiva & Equiretangular (lat-lon)\\
+      Perspective & Equiretangular (lat-lon)\\
       \multicolumn{1}{c}{
         $\begin{array}{l}
         {\vp}^x = (\vq^x/\vq^z)f + \vc^x\\
@@ -450,7 +440,7 @@ The orientation we find is a three-dimensional rotation between the natural and 
         \vp^y = f \sin^{-1}\left(\vq^y / |\vq| \right)
       \end{array}$}
       \\[\baselineskip]\\
-      Harris (distorção radial) & Polar Equidistante (olho-de-peixe)\\
+      Harris (radial distortion) & Polar Equidistant (fisheye)\\
       \multicolumn{1}{c}{
       $\begin{array}{l}
         \label{eqn:raddist}
@@ -471,19 +461,17 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 %%
 %%
-\begin{frame}{Projeção de um edgel}
+\begin{frame}{Edgel projection}
   \begin{overprint}
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)
     \includegraphics[width=17mm]{blocos_s2.png}
   \end{textblock*}
-  Um ponto $\vq_n$ de uma reta na
-  direção $\vr_k$ é projetado em $\vp_n$, produzindo um edgel com direção
+  A point $\vq_n$ from a line in the direction $\vr_k$ is projected on $\vp_n$, producuing an edgel com with direction
   \begin{tabularx}{\linewidth}{XCR}
     & $\vv_{nk}\propto\vJ_n\vr_k$ & ~\uncover<2>{$\left(\vv\leftarrow(\vP,\vp)\right)$}
   \end{tabularx}
   
-  A matriz Jacobiana da projeção $\vJ_n$ depende de $\vp_n$. A direção
-  ortogonal a $\vv_n$ é denominada $\vu_n$.
+  The projection Jacobian matrix $\vJ_n$ depends on $\vp_n$. The direction orthogonal to $\vv_n$ is denominated $\vu_n$.
 
   \centerline{\includegraphics[height=8\baselineskip]{variaveis.pdf}}
 
@@ -493,13 +481,12 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 %%
 %%
-\begin{frame}{Normal de um edgel}
+\begin{frame}{Edgel normal vector}
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)
     \includegraphics[width=17mm]{blocos_s2.png}
   \end{textblock*}
 
-  Direção de um plano definido pelo ponto focal e por um edgel, ou uma reta
-  correspondente no ambiente.
+  Direction of a plane defined by the focal point and by an edgel, or a corresponding environment line.
   \[
   \vn_k = \vu_k^x \vJ_k^x +  \vu_k^y \vJ_k^y
   \]
@@ -546,7 +533,7 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 %%
 %%
-\begin{frame}{Função objetivo}
+\begin{frame}{Objective function}
   \only<1>{\centerline{\includegraphics[height=12\baselineskip]{blocos_s2.pdf}}}
   \only<2>{\centerline{\includegraphics[height=12\baselineskip]{blocos_s3.pdf}}}
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)
@@ -557,19 +544,19 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 %%
 %%
-\begin{frame}{Função objetivo}
+\begin{frame}{Objective function}
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)
     \includegraphics[width=17mm]{blocos_s3.png}
   \end{textblock*}
 
-  A função objetivo é o cerne do método.\\
+  The objective function is the heart of the method.\\
   \begin{itemize}
-  \item Independe da técnica de extração.
-  \item Determina o resultado.
-  \item Conduz a escolha do algoritmo de otimização.
+  \item Does not depend on the extraction technique.
+  \item Determines the result.
+  \item Conducts the choice of the optimization algorithm.
   \end{itemize}
   
-  A expressão tem a forma de uma soma de erros obtidos de cada observação.
+  The expression has the shape of a summation of errors obtained from each observation.
   \[
   y_n = x_n - \hat{x}_n(\vP)
   \]\[
@@ -577,20 +564,20 @@ The orientation we find is a three-dimensional rotation between the natural and 
   \]
 \end{frame}
 
-\begin{frame}{Matriz de rotação}
+\begin{frame}{Rotation matrix}
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)
     \includegraphics[width=17mm]{blocos_s3.png}
   \end{textblock*}
 
-  O cálculo das predições começa com o cálculo das direções do referencial
-  natural $\vr_k$ em função de $\vP$.
+  An edgel direction prediction starts by finding the directions of the natural frame
+   $\vr_k$ as a function of $\vP$.
   
-  O \corisco trabalha com quaternions.
+  \corisco works with quaternions.
   \[
   \vP = (\Pa, \Pb, \Pc, \Pd) \qquad |\vP|=1
   \]
   
-  Para uma orientação $\vP$ qualquer temos
+  For a general orientation $\vP$ we have
   \[
   \mathbf{R}(\vP) =
   \left[
@@ -614,12 +601,12 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 %%
 %%
-\begin{frame}{Resíduo de um edgel}
+\begin{frame}{Edgel residue}
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)
     \includegraphics[width=17mm]{blocos_s3.png}
   \end{textblock*}
 
-  Dados os $\vr_k$, calculam-se as direções preditas $\vv_{nk}$ utilizando $\vJ_k$.
+  Given the $\vr_k$, we calculate the predicted $\vv_{nk}$ using $\vJ_k$.
   \[
   \vP \rightarrow \vr_k \rightarrow \vv_{nk}
   \]
@@ -627,15 +614,15 @@ The orientation we find is a three-dimensional rotation between the natural and 
   \vv_{nk}\propto\vJ_n\vr_k
   \]
   
-  O resíduo é obtido entre:\\
+  The residue compares:\\
   \begin{itemize}
-  \item $\vv_n$ (ou $\vu_n$) medidos da imagem.
-  \item $\vv_{nk}$ preditas a partir de $\vP$ e $\vp_n$.
+  \item $\vv_n$ (ou $\vu_n$) taken from the imagem.
+  \item $\vv_{nk}$ predicted from $\vP$ e $\vp_n$.
   \end{itemize}
 
   \begin{center}
     \begin{tabularx}{\textwidth}{XX}
-      Métodos anteriores: & \corisco:\\
+      Previous methods: & \corisco:\\
       \multicolumn{1}{l}{
         \quad$\angle\vv = \arctan(\vv^x, \vv^y)$}
       &
@@ -652,20 +639,20 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 %%
 %%
-\begin{frame}{Técnicas de estimação}
+\begin{frame}{Error function}
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)
     \includegraphics[width=17mm]{blocos_s3.png}
   \end{textblock*}
-  Comparação de técnicas já utilizadas com edgels:
+  Comparison with existing edgel based techiques:
 
   {\footnotesize
     \begin{tabularx}{\textwidth}{lCCC}
       \toprule
-      & MAP & EM & M-estimação\\
+      & MAP & EM & M-estimation\\
       \hline
-      Modelos & Probabilístico & Probabilístico & $\rho(x)$ \\
+      Models & Probabilistic & Probabilistic & $\rho(x)$ \\
       Classes & 4 & 4 & 3\\ 
-      Classificação & $\times$ & Iterativa & Direta\\
+      Classification & $\times$ & Iterative & Direct\\
       % Etapas & 1 & 2 & 1 \\ 
       \bottomrule
     \end{tabularx}
@@ -682,12 +669,12 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 %%
 %%
-\begin{frame}{Expressão da função objetivo}
+\begin{frame}{Objective function expression}
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)
     \includegraphics[width=17mm]{blocos_s3.png}
   \end{textblock*}
 
-  Estimador MAP~(\cite{Coughlan2003}):
+  MAP estimation~(\cite{Coughlan2003}):
   \[
   F(\vP) =
   -\sum_n\log\left(
@@ -695,7 +682,7 @@ The orientation we find is a three-dimensional rotation between the natural and 
   \right)
   \]
   
-  Estimador EM~(\cite{Schindler2004}):
+  EM estimation~(\cite{Schindler2004}):
   \[F(\vP) = -\sum_n \sum_k p(c_n=k) \log\left(
     p(\angle\vv_n|\vP,\vp_n,c_n=k)
   \right)\]
@@ -775,7 +762,7 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 %%
 %%
-\begin{frame}{Otimização}
+\begin{frame}{Optimization}
   \only<1>{\centerline{\includegraphics[height=12\baselineskip]{blocos_s3.pdf}}}
   \only<2>{\centerline{\includegraphics[height=12\baselineskip]{blocos_s4.pdf}}}
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)
@@ -786,14 +773,12 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 %%
 %%
-\begin{frame}{Otimização}{}
-  {\bf Primeiro passo:} RANSAC, busca estocástica guiada pelos
-  dados. Inerentemente ineficiente e impreciso.
+\begin{frame}{Optimization}{}
+  {\bf First step:} RANSAC, stochastic search guided by data. Inherently inefficient and imprecise.
 
   \uncover<2->{$\rightarrow \vP$ inicial}
 
-  {\bf Segundo passo:} FilterSQP, otimização contínua, mais eficiente e
-  precisa do que o RANSAC.
+  {\bf Second step:} FilterSQP, continuous optimization, more efficient and precise than RANSAC.
   
   \uncover<3>{$\rightarrow \vP$ final}
 
@@ -807,11 +792,12 @@ The orientation we find is a three-dimensional rotation between the natural and 
     \includegraphics[width=17mm]{blocos_s4.png}
   \end{textblock*}
 
-  Triplas de observações são selecionadas ao acaso. De  cada tripla calcula-se um $\vP$ hipotético, utilizando
-  $\vn_k$.
+  Observation triplets are randomly selected. From each one we calculate a hypothetical $\vP$, using $\vn_k$.
   
-  O $\vP$ de menor $F(\vP)$ é retido como estimativa inicial.
+  The $\vP$ with the smallest $F(\vP)$ is the initial estimate.
   \centerline{\includegraphics[height=8\baselineskip]{rdemo0014.png}}
+  \hfill\raisebox{\baselineskip}{\textcolor{black!20}{\scriptsize\url{http://i.imgur.com/O9jP8tz.gifv}}}
+
 \end{frame}
 
 
@@ -821,30 +807,29 @@ The orientation we find is a three-dimensional rotation between the natural and 
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)
     \includegraphics[width=17mm]{blocos_s4.png}
   \end{textblock*}
-  Minimizar $F(\vP)$ sobre as 4D e restrito a
-  $|\vP|=1$.
+  Minimize $F(\vP)$ over the 4D and constrained to $|\vP|=1$.
 
   \begin{tabular}{rcl}
-    {\em Programa não-linear} & $\rightarrow$ & \parbox{12em}{\centering{\bf SQP:} Sequential Quadratic Programming}
+    {\em Non-linear program} & $\rightarrow$ & \parbox{12em}{\centering{\bf SQP:} Sequential Quadratic Programming}
   \end{tabular}
   
-  O FilterSQP (\cite{Fletcher2002}) dispensa funções de penalidade.
+  FilterSQP (\cite{Fletcher2002}) dismisses penalty functions.
   \centerline{
     \includegraphics[height=9\baselineskip]{sqp_traj.png}
   }
 \end{frame}
 
-\begin{frame}{Derivada}
+\begin{frame}{Derivative}
   \begin{textblock*}{17mm}[1.0,0.0](\paperwidth-1px,1px)
     \includegraphics[width=17mm]{blocos_s4.png}
   \end{textblock*}
-  No \corisco as derivadas em $\vP$ são calculadas através de fórmulas fechadas.
+  \corisco calculates the $\vP$ derivatives by closed formulas.
   \[
   \frac{\partial F}{\partial\Pa}(\vP) = \sum_{nk}K_{nk}\,\rho^\prime(\vu_n\vv_{nk})
   \left(u_n^x\frac{\partial\vv_{nk}^x}{\partial\Pa} + u_n^y\frac{\partial\vv_{nk}^y}{\partial\Pa}\right)
   \]
 
-  As derivadas das direções $\vr_k$ são triviais:
+  The derivatives of the directions $\vr_k$ are trivial:
     \begin{eqnarray*}
       \frac{\partial \vr^x}{\partial \Pa} &=& 2( \Pa, \Pd,-\Pc)\\
       \frac{\partial \vr^x}{\partial \Pb} &=& 2( \Pb, \Pc, \Pd)\\
@@ -871,40 +856,37 @@ The orientation we find is a three-dimensional rotation between the natural and 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section[5--Experimentos]{Experimentos}
+\section[5--Experiments]{Experiments}
 
 %%
 %%
-\begin{frame}{Experimentos}
-  Foram realizados 3 experimentos que permitem avaliar o desempenho do
-  \corisco.
+\begin{frame}{Experiments}
+  We performed 3 experiments to assess the performance of \corisco.
 
-  Cada experimento utilizou um conjunto de imagens, e um método diferente para
-  obter orientações de referência.
+  Each experiment used a different image set, and method to obtain the reference orientations.
 
-  O erro observado é o deslocamento em graus da ``rotação residual'' entre
+  The observed error is the displacement in degrees of the ``rotação residual'' entre
   cada estimativa e referência.
 
-  O \corisco foi executado variando-se\\
+  \corisco was executed changing the settings:\\
   \begin{itemize}
-  \item o tamanho da grade,
-  \item e o número de iterações do RANSAC.
+  \item grid size $C_g$,
+  \item number of RANSAC iterations $C_r$.
   \end{itemize}
 \end{frame}
 
 %% 
 %%
 \begin{frame}{YorkUrbanDB}{}
-  {\bf Imagens:} 101 imagens de ambientes antrópicos.
+  {\bf Images:} 101 imagens from anthropic environments.
 
-  {\bf Modelo:} Perspectiva.
+  {\bf Model:} Perspective.
 
-  {\bf Referência:} Método semi-automático baseado em retas.
+  {\bf Reference:} Semi-automatic method based on lines.
 
-  {\bf Comparação:} Métodos testados por \cite{Denis2008}.
+  {\bf Comparison:} Methods studied by \cite{Denis2008}.
 
-  Parâmetros do modelo, orientações de referência e estatísticas de
-  desempenho fornecidos pelos autores.
+  Camera parameters, reference orientations and performance statistics provided by the authors.
 
 \end{frame}
 
@@ -1001,11 +983,11 @@ J-linkage        & $1.13$  & $8.23^\circ$ & $13.76^\circ$
 %%
 %%
 \begin{frame}{ApaSt}{}
-  {\bf Imagens:} 24+24 imagens de edifícios.
+  {\bf Images:} 24+24 building images.
 
-  {\bf Modelo:} Perspectiva com distorção radial (Harris).
+  {\bf Model:} Perspective with radial distortion (Harris).
 
-  {\bf Referência:} {\em Bundler}.
+  {\bf Reference:} {\em Bundler}.
 
   \begin{center}
     \includegraphics[height=6\baselineskip]{apast01.jpg}\quad
@@ -1017,10 +999,9 @@ J-linkage        & $1.13$  & $8.23^\circ$ & $13.76^\circ$
 %%
 %%
 \begin{frame}{ApaSt}
-  O {\em Bundler} (\cite{Snavely2006}) foi utilizado para obter as orientações
-  de referência e os parâmetros intrínsecos.
+  {\em Bundler} (\cite{Snavely2006}) foi used to obtain the reference orientations and intrinsic parameters.
 
-  Método multi-ocular baseado em pontos.
+  Point-based multi-view method.
 
   \begin{center}
     \fbox{\includegraphics[width=0.45\textwidth]{meshlab01.png}}
@@ -1045,18 +1026,18 @@ J-linkage        & $1.13$  & $8.23^\circ$ & $13.76^\circ$
 %%
 %%
 \begin{frame}{StreetView}{}
-  {\bf Imagens:} 250 imagens de um ambiente urbano.
+  {\bf Images:} 250 images from an urban environment.
 
-  {\bf Modelo:} Projeção equiretangular.
+  {\bf Model:} Equiretangular projection.
 
-  {\bf Referência:} Sensores físicos (IMU).
+  {\bf Reference:} Physical sensors (IMU).
   \centerline{\includegraphics[height=10\baselineskip]{equi.png}}
 \end{frame}
 
 %%
 %%
 \begin{frame}{StreetView}
-  Erro $\simeq 1^\circ$, tempo $\simeq 17$s.
+  Erro $\simeq 1^\circ$, time $\simeq 17$s.
 
 \begin{center}
     \includegraphics[height=12\baselineskip]{street_fit.pdf}
@@ -1066,29 +1047,26 @@ J-linkage        & $1.13$  & $8.23^\circ$ & $13.76^\circ$
 
 %%
 %%
-\begin{frame}{Conclusão}
-  O \corisco constitui um método com grande potencial para aplicação imediata.\\
+\begin{frame}{Conclusion}
+  \corisco is a method with great potential for immediate application.\\
   \begin{itemize}
-  \item Implementação relativamente simples.
-  \item Grande robustez (distorções, RANSAC).
-  \item Bom desempenho.
+  \item Relatively simple implementation.
+  \item Great robustness (distortions, RANSAC).
+  \item Good performance.
   \end{itemize}
   
-  Demonstrou-se as vantagens do uso da máscara em forma de grade, e da
-  M-estimação.
+  We demonstrated the advantages of applying the grid mask and M-estimation to the problem.
 
-  Também foi demonstrado como  utilizar o FilterSQP para trabalhar naturalmente
-  com quaternions.
+  We also demonstrated how to use FilterSQP in order to work with quaternions in a convenient way.
 \end{frame}  
 
-\begin{frame}{Trabalhos futuros}
+\begin{frame}{Future Work}
   \begin{itemize}
-  \item Controle automático dos parâmetros.
-  \item Reconstrução multi-ocular e monocular.
-  \item Utilizar filtros direcionais para medir o erro angular.
-  \item Utilizar a máscara de grade em outros problemas.
-  \item Estimar orientação e calibração, e extrair curvas em um processo
-    unificado. (MRF?)
+  \item Automatic parameter control. Replace RANSAC.
+  \item Apply to multi-view reconstruction, monocular SLAM, object tracking...
+  \item Use directional filters to measure the angular error.
+  \item Use the grid mask in other problems.
+  \item Estimate orientation, camera parameters, and extract curves all in a single unified process. (MRF?)
   \end{itemize}
 \end{frame}
 
@@ -1102,10 +1080,6 @@ J-linkage        & $1.13$  & $8.23^\circ$ & $13.76^\circ$
   \centerline{\includegraphics[height=11\baselineskip]{myrobot.jpg}}
 \end{minipage}
 
-\vfill
-\begin{block}{Financiamento}
-  Obrigado à Capes, CNPq e USP pelo suporte financeiro.
-\end{block}
 \end{frame}
 
 
@@ -1116,14 +1090,6 @@ J-linkage        & $1.13$  & $8.23^\circ$ & $13.76^\circ$
 \newcounter{finalframe}
 \setcounter{finalframe}{\value{framenumber}}
 
-
-\begin{frame}{Publicações}
-  \begin{itemize}
-  \item {\em Speeding up probabilistic inference of camera orientation by function approximation and grid masking}, \cite{Werneck2011}
-  \item {\em Mapping with monocular vision in two dimensions}, \cite{Werneck2010b}
-  \item {\em Medição de distância e altura de bordas horizontais com visão monocular linear para robôs móveis}, \cite{Werneck2009}
-  \end{itemize}
-\end{frame}
 
 \begin{frame}[allowframebreaks]
 \section*{Referências}
@@ -1139,8 +1105,8 @@ J-linkage        & $1.13$  & $8.23^\circ$ & $13.76^\circ$
 
 %%
 %%
-\begin{frame}{Teste de calibração}
- Estimação da distância focal com a mesma $F(\vP)$.
+\begin{frame}{Calibration test}
+ Estimating focal distance with the same $F(\vP)$.
 \centerline{
     \includegraphics[height=12\baselineskip]{edgel_cali.pdf}
   }
